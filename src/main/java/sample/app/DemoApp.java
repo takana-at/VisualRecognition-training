@@ -26,7 +26,6 @@ public class DemoApp {
 		 * 具体的に抽出する項目は、【有名人名】と【有名人の画像のURL】である そのページ全体の有名人に関する情報は、【<div
 		 * class="thumbnailBox_list">】タグに格納されている また、有名人1人1人の情報は、【<div
 		 * class="thumbnailBox">】タグに格納されている
-		 * 2017/2/8段階では、【日本の女優一覧】というページから女優リストを取得する
 		 */
 		
 		
@@ -91,39 +90,29 @@ public class DemoApp {
 	 * 1人の有名人に関する情報をさらに細かく抽出 抽出する情報は、【有名人名】、【有名人の画像URL】、【ページのリンクURL】
 	 * person_nameで、【有名人名】を定義する person_image_urlで、【有名人の画像URL】を定義する
 	 * person_detail_pageで、【ページのリンクURL】を定義する
+	 * person_image_nameで、【有名人の画像のファイル名】の抽出(2017/02/13変数として追加)
 	 */
 	public static String extractPersons(String str, String person_search_url) {
 		String person_name = app.TrimText(str, new String[] { "</a>", ">" }, "</a>");
 		String person_image_url = app.TrimText(str, new String[] { "<img", "src=\"" }, "\"");
 		String person_detail_page = person_search_url + app.TrimText(str, new String[] { "<a", "href=\"" }, "\"");
-/*
-		shapeImg(person_name, person_image_url);
-		produceText(person_name, person_image_url, person_detail_page);		
-*/
-		// try {
-		// FileOutputStream output = new FileOutputStream("images/" +
-		// person_name + ".jpg");
-		// byte[] image = app.getImage(person_image_url);
-		// output.write(image);
-		// output.flush();
-		// output.close();
-		// } catch (FileNotFoundException e) {
-		// e.printStackTrace();
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
+		String person_image_name = person_image_url.substring(person_image_url.lastIndexOf("/")+1,person_image_url.length()-4);
 
-		System.out.println(person_name + person_image_url + person_detail_page);
-		return person_name + person_image_url + person_detail_page;
+		shapeImg(person_image_name, person_image_url);
+		produceText(person_name,person_image_name, person_image_url, person_detail_page);		
+
+		System.out.println(person_name + person_image_url + person_detail_page + person_image_name);
+		return person_name + person_image_url + person_detail_page + person_image_name;
 	}
 
 	/*
 	 * 抽出した【有名人の画像URL】を画像ファイルとして保存
+	 * 2017年作成する画像ファイルのファイル名変更
 	 */
-	public static String shapeImg(String name, String img) {
+	public static String shapeImg(String img_name, String img_url) {
 		try {
-			FileOutputStream output = new FileOutputStream("images/" + name + ".jpg");
-			byte[] image = app.getImage(img);
+			FileOutputStream output = new FileOutputStream("images/" + img_name + ".jpg");
+			byte[] image = app.getImage(img_url);
 			output.write(image);
 			output.flush();
 			output.close();
@@ -136,12 +125,13 @@ public class DemoApp {
 	}
 
 	/*
-	 * 抽出した【有名人名】、【有名人の画像URL】、【ページのリンクURL】を定義したmetadataファイルをjsonファイルとして作成する
+	 * 抽出した【有名人名】、【有名人の画像のファイル名】、【有名人の画像URL】、【ページのリンクURL】を定義したmetadataファイルをjsonファイルとして作成する
+	 * 2017年作成するmetadataファイルのファイル名変更/jsonファイルに定義する情報として、【有名人の画像のファイル名】を追加
 	 */
-	public static String produceText(String name, String img, String link) {
+	public static String produceText(String name,String img_name, String img_url, String link) {
 		try {
-			FileWriter fw = new FileWriter("metadata/" + name + ".json");
-			fw.write("{\n	\"name\":\"" + name + "\",\n	\"imgUrl\":\"" + img + "\",\n	\"pageLink\":\"" + link
+			FileWriter fw = new FileWriter("metadata/" + img_name + ".json");
+			fw.write("{\n	\"name\":\""+ name + "\",\n	\"img_name\":\"" +  img_name + "\",\n	\"img_url\":\"" + img_url + "\",\n	\"pageLink\":\"" + link
 					+ "\"\n}");
 			fw.close();
 		} catch (IOException e) {
