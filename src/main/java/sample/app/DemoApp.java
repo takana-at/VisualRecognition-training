@@ -75,10 +75,10 @@ public class DemoApp {
 		String person_image_url = app.TrimText(str, new String[] { "<img", "src=\"" }, "\"");
 		String person_detail_page = person_search_url + app.TrimText(str, new String[] { "<a", "href=\"" }, "\"");
 		String person_image_name = person_image_url.substring(person_image_url.lastIndexOf("/")+1,person_image_url.length()-4);
-
+/*
 		shapeImg(person_image_name, person_image_url);
 		produceText(person_name,person_image_name, person_image_url, person_detail_page);		
-
+*/
 		System.out.println(person_name + person_image_url + person_detail_page + person_image_name);
 		return person_name + person_image_url + person_detail_page + person_image_name;
 	}
