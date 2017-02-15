@@ -75,10 +75,10 @@ public class DemoApp {
 		String person_image_url = app.TrimText(str, new String[] { "<img", "src=\"" }, "\"");
 		String person_detail_page = person_search_url + app.TrimText(str, new String[] { "<a", "href=\"" }, "\"");
 		String person_image_name = person_image_url.substring(person_image_url.lastIndexOf("/")+1,person_image_url.length()-4);
-/*
+
 		shapeImg(person_image_name, person_image_url);
 		produceText(person_name,person_image_name, person_image_url, person_detail_page);		
-*/
+
 		System.out.println(person_name + person_image_url + person_detail_page + person_image_name);
 		return person_name + person_image_url + person_detail_page + person_image_name;
 	}
@@ -109,8 +109,8 @@ public class DemoApp {
 	public static String produceText(String name,String img_name, String img_url, String link) {
 		try {
 			FileWriter fw = new FileWriter("metadata/" + img_name + ".json");
-			fw.write("{\n	\"name\":\""+ name + "\",\n	\"img_name\":\"" +  img_name + "\",\n	\"img_url\":\"" + img_url + "\",\n	\"pageLink\":\"" + link
-					+ "\"\n}");
+			fw.write("{\"name\":\""+ name + "\",\"img_name\":\"" +  img_name + "\",\"img_url\":\"" + img_url + "\",\"pageLink\":\"" + link
+					+ "\"}");
 			fw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
