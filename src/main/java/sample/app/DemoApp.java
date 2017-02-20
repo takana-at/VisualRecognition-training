@@ -89,13 +89,18 @@ public class DemoApp {
 	 * 2017/02/13作成する画像ファイルのファイル名変更
 	 */
 	public static String shapeImg(String img_name, String img_url) {
-	/*	2017/2/20変更	trainImageというフォルダを作成してから画像ファイル作成	*/
+	/*	2017/2/20変更	trainImageというフォルダを作成し、有名人ごとにフォルダ作成してから画像ファイル作成	*/
 		File file = new File("./trainImage");
 		if(file.exists() == false){
 			file.mkdirs();
 		}
+		File person_file = new File(file + "/" + img_name);
+		if(person_file.exists() == false){
+			person_file.mkdirs();
+		}
+
 		try {
-			FileOutputStream output = new FileOutputStream("trainImage/" + img_name + ".jpg");
+			FileOutputStream output = new FileOutputStream(person_file + "/" + img_name + ".jpg");
 			byte[] image = app.getImage(img_url);
 			output.write(image);
 			output.flush();
@@ -111,7 +116,7 @@ public class DemoApp {
 	/*
 	 * 抽出した【有名人名】、【有名人の画像のファイル名】、【有名人の画像URL】、【ページのリンクURL】を定義したmetadataファイルをjsonファイルとして作成する
 	 * 2017/02/13	作成するmetadataファイルのファイル名変更/jsonファイルに定義する情報として、【有名人の画像のファイル名】を追加
-	 * 2017/2/20変更	trainMetafileいうフォルダを作成してからmetafile作成
+	 * 2017/2/20変更	trainMetafileいうフォルダを作成し、有名人ごとにフォルダを作成してからmetafile作成
 	 */
 	public static String produceText(String name,String img_name, String img_url, String link) {
 	
@@ -119,8 +124,13 @@ public class DemoApp {
 		if(file.exists() == false){
 			file.mkdirs();
 		}
+		File person_file = new File(file + "/" + img_name);
+		if(person_file.exists() == false){
+			person_file.mkdirs();
+		}
+
 		try {
-			FileWriter fw = new FileWriter("trainMetafile/" + img_name + ".json");
+			FileWriter fw = new FileWriter(person_file + "/" + img_name + ".json");
 			fw.write("{\"name\":\""+ name + "\",\"img_name\":\"" +  img_name + "\",\"img_url\":\"" + img_url + "\",\"pageLink\":\"" + link
 					+ "\"}");
 			fw.close();
