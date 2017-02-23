@@ -43,13 +43,7 @@ public class DemoApp {
 			}
 	}
 	
-	/*
-	 * HTMLタグの抽出 抽出したHTMLの文字列から、有名人1人1人の情報は、【<a>】タグの内容を文字列で抽出
-	 *  persons_info !=nullのとき、[0]番目の配列には該当する文字列に有名人1人に関する情報を、 [1]番目の配列にはそれ以降の有名人全員に関する情報をを返す
-	 * while文の中では、1回目のループでperson_group_infoから有名人1人の情報を文字列で検索
-	 * 2回目以降のループで、persons_info[1]から有名人1人の情報を検索し、そのページの有名人全員に関する情報を抽出
-	 * persons_info == nullのとき、そのページにある有名人に関する情報をすべて抽出できたためループを抜ける
-	 */
+	/* HTMLタグの抽出 抽出したHTMLの文字列から、person_group_infoで有名人1人1人の情報を抽出	 */
 		public static String retrievePersons(String html,String search_url){
 			String person_group_info = app.TrimText(html, new String[] { "thumbnailBox_list", ">" }, "<span class=");
 //			 System.out.println(person_group_info);
@@ -66,9 +60,7 @@ public class DemoApp {
 		}
 
 	/*
-	 * 1人の有名人に関する情報をさらに細かく抽出 抽出する情報は、【有名人名】、【有名人の画像URL】、【ページのリンクURL】
-	 * person_nameで、【有名人名】を定義する person_image_urlで、【有名人の画像URL】を定義する
-	 * person_detail_pageで、【ページのリンクURL】を定義する
+	 * person_nameで【有名人名】、 person_image_urlで【有名人の画像URL】、 person_detail_pageで【ページのリンクURL】を定義する
 	 * person_image_nameで、【有名人の画像のファイル名】の抽出(2017/02/13変数として追加)
 	 */
 	public static String extractPersons(String str, String person_search_url) {
@@ -89,7 +81,7 @@ public class DemoApp {
 	 * 2017/02/13作成する画像ファイルのファイル名変更
 	 */
 	public static String shapeImg(String img_name, String img_url) {
-	/*	2017/2/20変更	trainImageというフォルダを作成し、有名人ごとにフォルダ作成してから画像ファイル作成	*/
+	/*	2017/2/20変更	trainImageというフォルダを作成し、有名人ごとにフォルダ作成してから画像ファイル作成	*/	
 		File file = new File("./trainImage");
 		if(file.exists() == false){
 			file.mkdirs();
@@ -99,17 +91,8 @@ public class DemoApp {
 			person_file.mkdirs();
 		}
 
-		try {
-			FileOutputStream output = new FileOutputStream(person_file + "/" + img_name + ".jpg");
-			byte[] image = app.getImage(img_url);
-			output.write(image);
-			output.flush();
-			output.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		String person_img_path = person_file + "/" + img_name + ".jpg";
+		app.addImage(img_url, person_img_path);
 		return null;
 	}
 
