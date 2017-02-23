@@ -1,5 +1,12 @@
 package sample.app;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -131,4 +138,47 @@ public class App {
 		return img;
 	}
 
+	/*	2017/2/23追加	URLの存在確認メソッド(mainクラスからの移行)	*/
+    public static boolean isExistURL(String urlStr) {
+        URL url;
+        int status = 0;
+        try {
+            url = new URL(urlStr);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("HEAD");
+            conn.connect();
+            status = conn.getResponseCode();
+            conn.disconnect();
+        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+        } catch (IOException e) {
+//            e.printStackTrace();
+        }
+
+        if (status == HttpURLConnection.HTTP_OK) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+	/* 2017/2/23追加		画像fileの保存メソッド(mainクラスからの移行)	 */
+	public String addImage(String img_url,String img_path){
+		if(isExistURL(img_url) == true){
+			try {
+				FileOutputStream output = new FileOutputStream(img_path);
+				byte[] image = getImage(img_url);
+				output.write(image);
+				output.flush();
+				output.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}		
+		}
+		return null;
+	}	
+	
+	
 }
