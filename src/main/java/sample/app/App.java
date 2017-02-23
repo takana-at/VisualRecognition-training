@@ -1,5 +1,6 @@
 package sample.app;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -138,7 +139,7 @@ public class App {
 		return img;
 	}
 
-	/*	2017/2/23追加	URLの存在確認メソッド(mainクラスからの移行)	*/
+	/*	2017/2/23追加	URLの存在確認(mainクラスからの移行)	*/
     public static boolean isExistURL(String urlStr) {
         URL url;
         int status = 0;
@@ -162,7 +163,22 @@ public class App {
         }
     }
 
-	/* 2017/2/23追加		画像fileの保存メソッド(mainクラスからの移行)	 */
+//    /*	2017/2/23追加	folderを作成してから、同じ名前のfolderを作成する(mainクラスからの移行)	*/
+//	public String addFile(String img_name, String img_path) {
+//		File file = new File(img_path);
+//		if(file.exists() == false){
+//			file.mkdirs();
+//		}
+//		File subFile = new File(file + "/" + img_name);
+//		if(subFile.exists() == false){
+//			subFile.mkdirs();
+//			return String.valueOf(subFile);
+//		}
+//		return null;
+//	}
+
+    
+	/* 2017/2/23追加		画像fileの保存(mainクラスからの移行)	 */
 	public String addImage(String img_url,String img_path){
 		if(isExistURL(img_url) == true){
 			try {
@@ -180,5 +196,14 @@ public class App {
 		return null;
 	}	
 	
+	/*	2017/2/21追加	fileの読み込み可能か判別(mainクラスからの移行)	*/
+	public boolean checkReadFile(File file){
+		if(file.exists()){
+			
+		}if(file.isFile() && file.canRead()){
+			return true;
+		}
+		return false;
+	}
 	
 }
