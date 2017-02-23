@@ -20,6 +20,9 @@ import org.apache.http.util.EntityUtils;
  *
  */
 public class App {
+	/*	第二引数の値をグローバル変数で定義し、metafileの作成に使用する	*/
+	public static String host_url;
+
 	/*
 	 * TrimTextメソッドでは、取得したHTML全体の文字列をもとに、取得したい情報を取得する
 	 * 第一引数srcには、取得したHTML全体の文字列を定義する 第二引数s1と第三引数s2で、HTMLから取得したい文字列の範囲を定義する
