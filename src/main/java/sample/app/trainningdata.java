@@ -7,9 +7,11 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -26,8 +28,8 @@ public class trainningdata {
 		
 		/* トレーニングデータとして抽出するURLを定義する */
 		String site_url = args[0];
-		String person_search_url = args[1];
-/*
+		app.host_url = args[1];
+
 		File folder = new File("./trainMetafile");
 		File files[] = folder.listFiles();
 		for(int i = 0; i < files.length; i++){
@@ -35,15 +37,15 @@ public class trainningdata {
 			File[] file_path = files[i].listFiles();
 			for(int j = 0; j < file_path.length; j++){
 //				System.out.println(file_path[j]);
-				extractMetafile(String.valueOf(file_path[j]),site_url,person_search_url);
+				extractMetafile(String.valueOf(file_path[j]),site_url);
 			}
 		}
-*/
-		extractMetafile("./trainMetafile/593836/593836.json",site_url,person_search_url)	;
+
+//		extractMetafile("./trainMetafile/593836/593836.json",site_url)	;
 	}
 	
 	/*	2017/2/21追加	metafileの読み込みメソッド	*/
-	public static String extractMetafile(String file_path,String site_url,String person_search_url){
+	public static String extractMetafile(String file_path,String site_url){
 		try {
 			File file = new File(file_path);
 			if(app.checkReadFile(file) == true){			
@@ -57,10 +59,13 @@ public class trainningdata {
 				}
 				br.close();
 
-				System.out.println(json_file);
-				extractJSON(json_file,site_url,person_search_url);
+//				System.out.println(json_file);
+				String img_path = file_path.substring(file_path.indexOf("file\\")+5,file_path.lastIndexOf("\\"));
+//				System.out.println(img_path);
+//				System.out.println(img_path.replace("Metafile", "Image"));
+				extractJSON(json_file,site_url,img_path);
 				
-				return json_file;
+				return json_file + img_path;
 			}
 			
 		} catch (FileNotFoundException e) {
@@ -74,7 +79,7 @@ public class trainningdata {
 	/*	2017/2/21追加	metafileから抽出した文字列をJSON形式に変換
 	 * 	JSONから必要な情報を抽出し、変数に置く
 	*/
-	public static String extractJSON(String file,String site_url,String person_search_url){
+	public static String extractJSON(String file,String site_url,String img_path){
 		JSONParser json_parser = new JSONParser();
 		JSONObject json_object = null;
 		try { 
@@ -86,9 +91,9 @@ public class trainningdata {
 //				/*	2017/2/22追加	表示用の画像URLを抽出するサイトの定義	*/
 //			String show_url = site_url + meta_name;
 //			String show_html = app.getHTML(show_url);
-//			retrievePersons(show_html,person_search_url,meta_img_name,meta_img_url);
+//			retrievePersons(show_html,meta_img_name,meta_img_url);
 
-			extractTrainUrl(meta_pageLink);
+			extractTrainUrl(meta_pageLink,img_path);
 //			System.out.println(meta_name + meta_img_name + meta_img_url + meta_pageLink);
 			return meta_name + meta_img_name + meta_img_url + meta_pageLink;
 			
@@ -99,38 +104,71 @@ public class trainningdata {
 }
 
 	/*	2017/2/22	トレーニング画像データの追加用URLの定義	*/
-	public static String extractTrainUrl(String url){
+	public static String extractTrainUrl(String url,String img_path){
 		String train_html = app.getHTML(url);
 		String train_info = app.TrimText(train_html, new String[] {"<body","<div","id=\"navigation\"","id=\"pan\"","<img src="," /></a></div>"}, " class=\"recommend\">");
-		//System.out.println(train_info);
+//		System.out.println(train_info);
 		while (true) {
 			String[] train_img_imfo = app.TrimTextNext(train_info, new String[] {"class=\"imagebox\"","href=","target=",">"  },"<p" );
 			if (train_img_imfo == null) {
 				break;
-			}				
-			addTrainImage(train_img_imfo[0]);
+			}
+//		System.out.println(train_img_imfo[0]);
+//		System.out.println();
+			addTrainImage(train_img_imfo[0],img_path);
 			train_info = train_img_imfo[1];
 		}
 		return null;
 	}
 	
 	/*	2017/2/22	トレーニング画像データの追加	*/
-	public static String addTrainImage(String img_imfo){
-		String train_img_url = app.TrimText(img_imfo,new String[]{"src=\""},"\"");
-		String untrain_img_name = train_img_url.substring(train_img_url.lastIndexOf("/")+1,train_img_url.length());
-		String train_img_name = null;
-		if(untrain_img_name.indexOf(".jpg?") != -1){
-			train_img_name = untrain_img_name.substring(0,untrain_img_name.indexOf(".jpg?")+4);
-		}else if(untrain_img_name.indexOf(".jpg") == -1 && untrain_img_name.indexOf(".jpeg") == -1 && untrain_img_name.indexOf(".png") == -1){
-			train_img_name = untrain_img_name + ".jpg";
-		}else{
-			train_img_name = untrain_img_name;
+	public static String addTrainImage(String img_imfo,String img_path){
+		String unencoded_train_img_url = app.TrimText(img_imfo,new String[]{"img","src=\""},"\"");
+		String train_img_url = "";
+		String train_img_path = "";
+		try {
+			String untrain_img_url = unencoded_train_img_url; //URLEncoder.encode(unencoded_train_img_url,"UTF-8");			
+			String pre_img_url = untrain_img_url.substring(0,untrain_img_url.lastIndexOf("/")+1);
+			String untrain_img_name = untrain_img_url.substring(untrain_img_url.lastIndexOf("/")+1,untrain_img_url.length());
+			train_img_url = pre_img_url + URLEncoder.encode(untrain_img_name,"UTF-8");
+			
+			System.out.println("pre_img_url = " + pre_img_url);
+			System.out.println("untrain_img_name =" + untrain_img_name);
+			String train_img_name = null;
+			if(untrain_img_name.indexOf(".jpg?") != -1){
+				train_img_name = untrain_img_name.substring(0,untrain_img_name.indexOf(".jpg?")+4);
+			}else if(untrain_img_name.indexOf(".jpg") == -1 && untrain_img_name.indexOf(".jpeg") == -1 && untrain_img_name.indexOf(".png") == -1){
+				train_img_name = untrain_img_name + ".jpg";
+			}else{
+				train_img_name = untrain_img_name;
+			}
+					
+			String[] ng_name = {"?","\\","<",">","\\",":","*","\"","|"};
+			for(int i = 0; i < ng_name.length; i++){
+				if(train_img_name.indexOf(ng_name[i]) > -1){
+					train_img_name = train_img_name.replace(ng_name[i], "");
+				}
+			}
+	/*
+			char[] ng_str = train_img_name.toCharArray();
+			for(int i = 0; i < ng_str.length; i++){
+				if(String.valueOf(ng_str[i]).getBytes().length > 1 ){
+					System.out.println(ng_str[i]);
+					System.out.println(i);
+					train_img_name = train_img_name.replace(String.valueOf(ng_str[i]),String.valueOf(i));
+				}
+			}
+	*/					
+			System.out.println("train_img_url =" + train_img_url);
+//			System.out.println(train_img_name);
+			train_img_path = "./trainImage/" + img_path + "/" + train_img_name;
+//			System.out.println(train_img_path);
+			app.addImage(train_img_url,train_img_path);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-//		System.out.println(train_img_url);
-		System.out.println(train_img_name);
-		String train_img_path = "./trainImage/593836/" + train_img_name;
-		app.addImage(train_img_url,train_img_path);
-		return img_imfo;
+		return train_img_url + train_img_path;
 	}
 	
 	
@@ -138,13 +176,13 @@ public class trainningdata {
 //	/*
 //	 * HTMLタグの抽出 抽出したHTMLの文字列から、有名人1人1人の情報は、【<a>】タグの内容を文字列で抽出
 //	 */
-//		public static String retrievePersons(String html,String search_url,String show_img_name,String show_img_url){
+//		public static String retrievePersons(String html,String show_img_name,String show_img_url){
 ////			String person_group_info = app.TrimText(html, new String[] {"</head>","</div>" ,"firstHeading","mw-content-text",">"}, "<p><b>");
 //			String person_group_info = app.TrimText(html, new String[] {"</head>","</div>" ,"firstHeading","mw-content-text","<table"}, "<p><b>");			
 ////			 System.out.println(person_group_info);
-////				extractPersons(person_group_info, search_url,show_img_name,show_img_url);
+////				extractPersons(person_group_info,show_img_name,show_img_url);
 //				System.out.println("");
-//			return html + search_url;
+//			return html;
 //		}
 //
 //	/*
@@ -153,7 +191,7 @@ public class trainningdata {
 //	 * 2017/2/22追加	person_img_folder_nameで、、【有名人の表示用画像】を格納するフォルダー名を定義
 //	 * must!! 2017/2/22時点で、スクレイピングのコーディングに不備あり	
 //	 */
-//	public static String extractPersons(String str, String person_search_url,String show_img_name,String show_img_url) {
+//	public static String extractPersons(String str,String show_img_name,String show_img_url) {
 //		String person_name = app.TrimText(str, new String[] { "</span><br />" }, "</th>");
 //		String person_image_url = null;
 //		String person_image_name = null;
