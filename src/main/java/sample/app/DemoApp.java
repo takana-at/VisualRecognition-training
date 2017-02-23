@@ -17,7 +17,7 @@ public class DemoApp {
 		
 		/* トレーニングデータとして抽出するURLを定義する */
 		String site_url = args[0];
-		String person_search_url = args[1];
+		app.host_url = args[1];
 
 		String app_html = app.getHTML(site_url);
 
@@ -33,7 +33,7 @@ public class DemoApp {
 				int site_url_num = Integer.parseInt(site_url.substring(site_url.lastIndexOf("_")+1,site_url.lastIndexOf(".")));
 				site_url = site_url.replace(String.valueOf(site_url_num), String.valueOf(num));
 				app_html = app.getHTML(site_url);
-				retrievePersons(app_html,person_search_url);
+				retrievePersons(app_html);
 //				System.out.println(site_url);
 				site_url_num ++;
 				num++;
@@ -44,7 +44,7 @@ public class DemoApp {
 	}
 	
 	/* HTMLタグの抽出 抽出したHTMLの文字列から、person_group_infoで有名人1人1人の情報を抽出	 */
-		public static String retrievePersons(String html,String search_url){
+		public static String retrievePersons(String html){
 			String person_group_info = app.TrimText(html, new String[] { "thumbnailBox_list", ">" }, "<span class=");
 //			 System.out.println(person_group_info);
 			while (true) {
@@ -52,21 +52,21 @@ public class DemoApp {
 				if (persons_info == null) {
 					break;
 				}
-				extractPersons(persons_info[0], search_url);
+				extractPersons(persons_info[0]);
 				System.out.println("");
 				person_group_info = persons_info[1];
 			}
-			return html + search_url;
+			return html;
 		}
 
 	/*
 	 * person_nameで【有名人名】、 person_image_urlで【有名人の画像URL】、 person_detail_pageで【ページのリンクURL】を定義する
 	 * person_image_nameで、【有名人の画像のファイル名】の抽出(2017/02/13変数として追加)
 	 */
-	public static String extractPersons(String str, String person_search_url) {
+	public static String extractPersons(String str) {
 		String person_name = app.TrimText(str, new String[] { "</a>", ">" }, "</a>");
 		String person_image_url = app.TrimText(str, new String[] { "<img", "src=\"" }, "\"");
-		String person_detail_page = person_search_url + app.TrimText(str, new String[] { "<a", "href=\"" }, "\"");
+		String person_detail_page = app.host_url + app.TrimText(str, new String[] { "<a", "href=\"" }, "\"");
 		String person_image_name = person_image_url.substring(person_image_url.lastIndexOf("/")+1,person_image_url.length()-4);
 
 		shapeImg(person_image_name, person_image_url);
