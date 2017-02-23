@@ -7,6 +7,9 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -24,21 +27,26 @@ public class trainningdata {
 		/* トレーニングデータとして抽出するURLを定義する */
 		String site_url = args[0];
 		String person_search_url = args[1];
-	
-//		site_url = site_url.substring(0,site_url.lastIndexOf("/")+1);
-		extractMetafile("./trainMetafile/2753570/2753570.json",site_url,person_search_url)	;
-//		System.out.println(site_url);		
-/*		
-		String app_html = app.getHTML(site_url);
-		retrievePersons(app_html,person_search_url);
+/*
+		File folder = new File("./trainMetafile");
+		File files[] = folder.listFiles();
+		for(int i = 0; i < files.length; i++){
+//			System.out.println(files[i]);
+			File[] file_path = files[i].listFiles();
+			for(int j = 0; j < file_path.length; j++){
+//				System.out.println(file_path[j]);
+				extractMetafile(String.valueOf(file_path[j]),site_url,person_search_url);
+			}
+		}
 */
+		extractMetafile("./trainMetafile/593836/593836.json",site_url,person_search_url)	;
 	}
 	
 	/*	2017/2/21追加	metafileの読み込みメソッド	*/
 	public static String extractMetafile(String file_path,String site_url,String person_search_url){
 		try {
 			File file = new File(file_path);
-			if(checkReadFile(file) == true){			
+			if(app.checkReadFile(file) == true){			
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				String json_file = "";
 				String line = br.readLine();
@@ -75,14 +83,13 @@ public class trainningdata {
 			String meta_img_name = (String) json_object.get("img_name");
 			String meta_img_url = (String) json_object.get("img_url");
 			String meta_pageLink = (String) json_object.get("pageLink");
-				/*	表示用の画像URLの抽出	*/
-			String show_url = site_url + meta_name;
-//			System.out.println(show_url);
-			
-			String app_html = app.getHTML(show_url);
-			retrievePersons(app_html,person_search_url,meta_img_name,meta_img_url);
-			
-			System.out.println(meta_name + meta_img_name + meta_img_url + meta_pageLink);
+//				/*	2017/2/22追加	表示用の画像URLを抽出するサイトの定義	*/
+//			String show_url = site_url + meta_name;
+//			String show_html = app.getHTML(show_url);
+//			retrievePersons(show_html,person_search_url,meta_img_name,meta_img_url);
+
+			extractTrainUrl(meta_pageLink);
+//			System.out.println(meta_name + meta_img_name + meta_img_url + meta_pageLink);
 			return meta_name + meta_img_name + meta_img_url + meta_pageLink;
 			
 		} catch (ParseException e) {
@@ -91,136 +98,136 @@ public class trainningdata {
 		return null;
 }
 
-	/*
-	 * HTMLタグの抽出 抽出したHTMLの文字列から、有名人1人1人の情報は、【<a>】タグの内容を文字列で抽出
-	 *  persons_info !=nullのとき、[0]番目の配列には該当する文字列に有名人1人に関する情報を、 [1]番目の配列にはそれ以降の有名人全員に関する情報をを返す
-	 * while文の中では、1回目のループでperson_group_infoから有名人1人の情報を文字列で検索
-	 * 2回目以降のループで、persons_info[1]から有名人1人の情報を検索し、そのページの有名人全員に関する情報を抽出
-	 * persons_info == nullのとき、そのページにある有名人に関する情報をすべて抽出できたためループを抜ける
-	 */
-		public static String retrievePersons(String html,String search_url,String show_img_name,String show_img_url){
-			String person_group_info = app.TrimText(html, new String[] {"</head>","</div>" ,"firstHeading","mw-content-text",">"}, "<p><b>");
-//			 System.out.println(person_group_info);
-				extractPersons(person_group_info, search_url,show_img_name,show_img_url);
-				System.out.println("");
-			return html + search_url;
+	/*	2017/2/22	トレーニング画像データの追加用URLの定義	*/
+	public static String extractTrainUrl(String url){
+		String train_html = app.getHTML(url);
+		String train_info = app.TrimText(train_html, new String[] {"<body","<div","id=\"navigation\"","id=\"pan\"","<img src="," /></a></div>"}, " class=\"recommend\">");
+		//System.out.println(train_info);
+		while (true) {
+			String[] train_img_imfo = app.TrimTextNext(train_info, new String[] {"class=\"imagebox\"","href=","target=",">"  },"<p" );
+			if (train_img_imfo == null) {
+				break;
+			}				
+			addTrainImage(train_img_imfo[0]);
+			train_info = train_img_imfo[1];
 		}
-
-	/*
-	 * 1人の有名人に関する情報をさらに細かく抽出 抽出する情報は、【有名人名】、【有名人の画像URL】、【ページのリンクURL】
-	 * person_nameで、【有名人名】を定義する person_image_urlで、【有名人の画像URL】を定義する
-	 * person_detail_pageで、【ページのリンクURL】を定義する
-	 * person_image_nameで、【有名人の画像のファイル名】の抽出(2017/02/13変数として追加)
-	 */
-	public static String extractPersons(String str, String person_search_url,String show_img_name,String show_img_url) {
-		String person_name = app.TrimText(str, new String[] { "</span><br />" }, "</th>");
-//		String person_birth_year = app.TrimText(str, new String[] { "%E5%B9%B4","title=\"" ,">"}, "<");
-//		String person_birth_monthday = app.TrimText(str, new String[] { "%E6%97%A5","title=\"" ,">"}, "<");
-//		String person_occupation = app.TrimText(str, new String[] { "%E8%A1%80%E6%B6%B2%E5%9E%8B","itemprop=", "itemprop=","title=\"",">"}, "<");
-		String person_image_url = null;
-		String person_image_name = null;
-			/*	表示用URLに画像が掲載されている場合は掲載されている画像を、掲載されていない場合はトレーニングデータの画像を表示する	*/
-		if(str.indexOf("img") != -1){
-		person_image_url = "https:" + app.TrimText(str, new String[] { "colspan=","itemprop=" ,"img","srcset=\""}, " ");
-		person_image_name = person_image_url.substring(person_image_url.lastIndexOf("/")+1,person_image_url.length()-4);
+		return null;
+	}
+	
+	/*	2017/2/22	トレーニング画像データの追加	*/
+	public static String addTrainImage(String img_imfo){
+		String train_img_url = app.TrimText(img_imfo,new String[]{"src=\""},"\"");
+		String untrain_img_name = train_img_url.substring(train_img_url.lastIndexOf("/")+1,train_img_url.length());
+		String train_img_name = null;
+		if(untrain_img_name.indexOf(".jpg?") != -1){
+			train_img_name = untrain_img_name.substring(0,untrain_img_name.indexOf(".jpg?")+4);
+		}else if(untrain_img_name.indexOf(".jpg") == -1 && untrain_img_name.indexOf(".jpeg") == -1 && untrain_img_name.indexOf(".png") == -1){
+			train_img_name = untrain_img_name + ".jpg";
 		}else{
-			person_image_url = show_img_url;
-			person_image_name = show_img_name;
-			
+			train_img_name = untrain_img_name;
 		}
-		
-///*		String unshaped_person_occupation = app.TrimText(str, new String[] { "%E8%A1%80%E6%B6%B2%E5%9E%8B","itemprop=", "itemprop="}, "</td>");
-//		System.out.println(unshaped_person_occupation);
-//		String person_occupation[];
-//		String[] occupations;
-//		occupations = new String[2];
-//		while (true) {
-//			int i = 0 ;
-//			person_occupation = new String[i+1];
-//
-//			occupations = app.TrimTextNext(unshaped_person_occupation, new String[] {"title=\"",">"}, "<");
-//			if (occupations == null) {
-//				break;
-//			}
-//				person_occupation[i] = occupations[0];
-//				System.out.println(person_occupation[i]);
-//				System.out.println(i);
+//		System.out.println(train_img_url);
+		System.out.println(train_img_name);
+		String train_img_path = "./trainImage/593836/" + train_img_name;
+		app.addImage(train_img_url,train_img_path);
+		return img_imfo;
+	}
+	
+	
+	
+//	/*
+//	 * HTMLタグの抽出 抽出したHTMLの文字列から、有名人1人1人の情報は、【<a>】タグの内容を文字列で抽出
+//	 */
+//		public static String retrievePersons(String html,String search_url,String show_img_name,String show_img_url){
+////			String person_group_info = app.TrimText(html, new String[] {"</head>","</div>" ,"firstHeading","mw-content-text",">"}, "<p><b>");
+//			String person_group_info = app.TrimText(html, new String[] {"</head>","</div>" ,"firstHeading","mw-content-text","<table"}, "<p><b>");			
+////			 System.out.println(person_group_info);
+////				extractPersons(person_group_info, search_url,show_img_name,show_img_url);
 //				System.out.println("");
-//				
-//			if(occupations[1].indexOf("title") == -1){
-//				break;
-//			}
-//			unshaped_person_occupation = occupations[1];
-//			i++;
+//			return html + search_url;
 //		}
-//		System.out.println(person_name + person_image_url + person_birth_year + person_birth_monthday + person_image_name + person_occupation);
-//		return person_name + person_image_url + person_birth_year + person_birth_monthday + person_image_name + person_occupation;
+//
+//	/*
+//	 * 1人の有名人に関する情報をさらに細かく抽出 抽出する情報は、【有名人名】、【有名人の表示用画像URL】
+//	 * person_nameで、【有名人名】を定義する person_image_urlで、【有名人の表示用画像URL】を定義する
+//	 * 2017/2/22追加	person_img_folder_nameで、、【有名人の表示用画像】を格納するフォルダー名を定義
+//	 * must!! 2017/2/22時点で、スクレイピングのコーディングに不備あり	
+//	 */
+//	public static String extractPersons(String str, String person_search_url,String show_img_name,String show_img_url) {
+//		String person_name = app.TrimText(str, new String[] { "</span><br />" }, "</th>");
+//		String person_image_url = null;
+//		String person_image_name = null;
+//			/*	2017/2/22追加	類似画像検索後の表示用画像URLの抽出	
+//			 * 表示用URLに画像が掲載されている場合は掲載されている画像を、掲載されていない場合はトレーニングデータの画像を表示する	*/
+//		String unshaped_url = app.TrimText(str, new String[] { person_name,"text-align:center","colspan=","text-align:center","itemprop="},"scope");
+////		System.out.println(unshaped_url);
+//		
+//		if(unshaped_url.indexOf("img") != -1){		
+//			person_image_url = "https:" + app.TrimText(unshaped_url, new String[] { "img","srcset=\""}, " ");
+////			person_image_url = "https:" + app.TrimText(str, new String[] { person_name,"colspan=","itemprop=" ,"img","srcset=\""}, " ");
+//			person_image_name = person_image_url.substring(person_image_url.lastIndexOf("/")+1,person_image_url.length()-4);
+//		}else{
+//			person_image_url = show_img_url;
+//			person_image_name = show_img_name;
+//		}
+//		String img_folder_name = show_img_name;
+///*		
+//		shapeImg(person_image_name, person_image_url,img_folder_name);
+// 		produceText(person_name,person_image_name, person_image_url);		
 //*/
-/*
-		shapeImg(person_image_name, person_image_url);
- 		produceText(person_name,person_image_name, person_image_url);		
-*/
-		 
-		System.out.println(person_name + person_image_url  + person_image_name);
-		return person_name + person_image_url  + person_image_name ;
-		
-	}
-	/*
-	 * 抽出した【有名人の画像URL】を画像ファイルとして保存
-	 * 2017/02/13作成する画像ファイルのファイル名変更
-	 */
-	public static String shapeImg(String img_name, String img_url) {
-		File file = new File("./image");
-		if(file.exists() == false){
-			file.mkdirs();
-		}
-		File person_file = new File(file + "/" + img_name);
-		if(person_file.exists() == false){
-			person_file.mkdirs();
-		}
-		try {
-			FileOutputStream output = new FileOutputStream(person_file + "/" + img_name + ".jpg");
-			byte[] image = app.getImage(img_url);
-			output.write(image);
-			output.flush();
-			output.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
-		return null;
-	}
-	/*
-	 * 抽出した【有名人名】、【有名人の画像のファイル名】、【有名人の画像URL】、【ページのリンクURL】を定義したmetadataファイルをjsonファイルとして作成する
-	 * 2017/02/13作成するmetadataファイルのファイル名変更/jsonファイルに定義する情報として、【有名人の画像のファイル名】を追加
-	 */
-	public static String produceText(String name,String img_name, String img_url) {
-		File file = new File("./metafile");
-		if(file.exists() == false){
-			file.mkdirs();
-		}
-		File person_file = new File(file + "/" + img_name);
-		if(person_file.exists() == false){
-			person_file.mkdirs();
-		}
-		
-		try {
-			FileWriter fw = new FileWriter(person_file + "/" + img_name + ".json");
-			fw.write("{\"name\":\""+ name + "\",\"img_name\":\"" +  img_name + "\",\"img_url\":\"" + img_url + "\"}");
-			fw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-		/*	2017/2/21追加	fileの読み込み可能か判別	*/
-	public static boolean checkReadFile(File file){
-		if(file.exists()){
-			
-		}if(file.isFile() && file.canRead()){
-			return true;
-		}
-		return false;
-	}
+//		 
+//		System.out.println(person_name + " " +  person_image_url  + " " + person_image_name	/* + img_folder_name	*/);
+//		return person_name + person_image_url  + person_image_name;
+//		
+//	}
+//	/*
+//	 * 抽出した【有名人の画像URL】を画像ファイルとして保存
+//	 * 2017/02/13作成する画像ファイルのファイル名変更
+//	 */
+//	public static String shapeImg(String img_name, String img_url,String img_folder_name) {
+//		File file = new File("./showImage");
+//		if(file.exists() == false){
+//			file.mkdirs();
+//		}
+//		File person_file = new File(file + "/" + img_folder_name);
+//		if(person_file.exists() == false){
+//			person_file.mkdirs();
+//		}
+//		try {
+//			FileOutputStream output = new FileOutputStream(person_file + "/" + img_name + ".jpg");
+//			byte[] image = app.getImage(img_url);
+//			output.write(image);
+//			output.flush();
+//			output.close();
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}		
+//		return null;
+//	}
+//	/*
+//	 * 抽出した【有名人名】、【有名人の画像のファイル名】、【有名人の画像URL】、【ページのリンクURL】を定義したmetadataファイルをjsonファイルとして作成する
+//	 * 2017/02/13作成するmetadataファイルのファイル名変更/jsonファイルに定義する情報として、【有名人の画像のファイル名】を追加
+//	 */
+//	public static String produceText(String name,String img_name, String img_url) {
+//		File file = new File("./metafile");
+//		if(file.exists() == false){
+//			file.mkdirs();
+//		}
+//		File person_file = new File(file + "/" + img_name);
+//		if(person_file.exists() == false){
+//			person_file.mkdirs();
+//		}
+//		
+//		try {
+//			FileWriter fw = new FileWriter(person_file + "/" + img_name + ".json");
+//			fw.write("{\"name\":\""+ name + "\",\"img_name\":\"" +  img_name + "\",\"img_url\":\"" + img_url + "\"}");
+//			fw.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
+	
 }
