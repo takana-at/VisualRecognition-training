@@ -108,26 +108,25 @@ public class trainningdata {
 		String train_info = app.TrimText(train_html, new String[] {"<body","<div","id=\"navigation\"","id=\"pan\"","<img src="," /></a></div>"}, " class=\"recommend\">");
 //		System.out.println(train_info);
 		while (true) {
-			String[] train_img_imfo = app.TrimTextNext(train_info, new String[] {"class=\"imagebox\"","href=","target=",">"  },"<p" );
-			if (train_img_imfo == null) {
+			String[] train_img_info = app.TrimTextNext(train_info, new String[] {"class=\"imagebox\"","href=","target=",">"  },"<p" );
+			if (train_img_info == null) {
 				break;
 			}
-//		System.out.println(train_img_imfo[0]);
+//		System.out.println(train_img_info[0]);
 //		System.out.println();
 			
 			/*	マルチスレッド実装	*/
-			TrainThread train = new TrainThread(train_img_imfo[0],img_path);
+			TrainThread train = new TrainThread(train_img_info[0],img_path);
 			Thread thread = new Thread(train);
 			thread.start();
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 //			addTrainImage(train_img_imfo[0],img_path);
-			train_info = train_img_imfo[1];
+			train_info = train_img_info[1];
 		}
 		return null;
 	}
