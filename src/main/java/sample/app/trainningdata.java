@@ -33,10 +33,10 @@ public class trainningdata {
 		File folder = new File("./trainMetafile");
 		File files[] = folder.listFiles();
 		for(int i = 0; i < files.length; i++){
-//			System.out.println(files[i]);
+//			System.out.println("\"files[i]\" = " + files[i]);
 			File[] file_path = files[i].listFiles();
 			for(int j = 0; j < file_path.length; j++){
-//				System.out.println(file_path[j]);
+//				System.out.println("\"file_path[j]\" = " + file_path[j]);
 				extractMetafile(String.valueOf(file_path[j]),site_url);
 			}
 		}
@@ -59,10 +59,9 @@ public class trainningdata {
 				}
 				br.close();
 
-//				System.out.println(json_file);
+//				System.out.println("\"json_file\" = " + json_file);
 				String img_path = file_path.substring(file_path.indexOf("file\\")+5,file_path.lastIndexOf("\\"));
-//				System.out.println(img_path);
-//				System.out.println(img_path.replace("Metafile", "Image"));
+//				System.out.println("\"img_path\" = " + img_path);
 				extractJSON(json_file,site_url,img_path);
 				
 				return json_file + img_path;
@@ -127,20 +126,20 @@ public class trainningdata {
 		String train_img_url = "";
 		String train_img_path = "";
 		try {
-			String untrain_img_url = unencoded_train_img_url; //URLEncoder.encode(unencoded_train_img_url,"UTF-8");			
-			String pre_img_url = untrain_img_url.substring(0,untrain_img_url.lastIndexOf("/")+1);
-			String untrain_img_name = untrain_img_url.substring(untrain_img_url.lastIndexOf("/")+1,untrain_img_url.length());
-			train_img_url = pre_img_url + URLEncoder.encode(untrain_img_name,"UTF-8");
+//			String untrain_img_url = unencoded_train_img_url; //URLEncoder.encode(unencoded_train_img_url,"UTF-8");			
+			String pre_img_url = unencoded_train_img_url.substring(0,unencoded_train_img_url.lastIndexOf("/")+1);
+			String post_img_url = unencoded_train_img_url.substring(unencoded_train_img_url.lastIndexOf("/")+1,unencoded_train_img_url.length());
+			train_img_url = pre_img_url + URLEncoder.encode(post_img_url,"UTF-8");
 			
-			System.out.println("pre_img_url = " + pre_img_url);
-			System.out.println("untrain_img_name =" + untrain_img_name);
+			System.out.println("\"pre_img_url\" = " + pre_img_url);
+			System.out.println("\"post_img_url\" = " + post_img_url);
 			String train_img_name = null;
-			if(untrain_img_name.indexOf(".jpg?") != -1){
-				train_img_name = untrain_img_name.substring(0,untrain_img_name.indexOf(".jpg?")+4);
-			}else if(untrain_img_name.indexOf(".jpg") == -1 && untrain_img_name.indexOf(".jpeg") == -1 && untrain_img_name.indexOf(".png") == -1){
-				train_img_name = untrain_img_name + ".jpg";
+			if(post_img_url.indexOf(".jpg?") != -1){
+				train_img_name = post_img_url.substring(0,post_img_url.indexOf(".jpg?")+4);
+			}else if(post_img_url.indexOf(".jpg") == -1 && post_img_url.indexOf(".jpeg") == -1 && post_img_url.indexOf(".png") == -1){
+				train_img_name = post_img_url + ".jpg";
 			}else{
-				train_img_name = untrain_img_name;
+				train_img_name = post_img_url;
 			}
 					
 			String[] ng_name = {"?","\\","<",">","\\",":","*","\"","|"};
@@ -159,10 +158,10 @@ public class trainningdata {
 				}
 			}
 	*/					
-			System.out.println("train_img_url =" + train_img_url);
-//			System.out.println(train_img_name);
+			System.out.println("\"train_img_url\" = " + train_img_url);
+//			System.out.println("\"train_img_name\" = " + train_img_name);
 			train_img_path = "./trainImage/" + img_path + "/" + train_img_name;
-//			System.out.println(train_img_path);
+//			System.out.println("\"train_img_path\" = " + train_img_path);
 			app.addImage(train_img_url,train_img_path);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
