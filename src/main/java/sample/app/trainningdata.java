@@ -59,8 +59,8 @@ public class trainningdata {
 				}
 				br.close();
 
-//				System.out.println("\"json_file\" = " + json_file);
-				String img_path = file_path.substring(file_path.indexOf("file\\")+5,file_path.lastIndexOf("\\"));
+				System.out.println("\"file_path\" = " + file_path);
+				String img_path = file_path.substring(file_path.indexOf("file" + File.separator)+5,file_path.lastIndexOf(File.separator));
 //				System.out.println("\"img_path\" = " + img_path);
 				extractJSON(json_file,site_url,img_path);
 				
