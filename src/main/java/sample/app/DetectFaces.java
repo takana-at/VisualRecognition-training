@@ -19,7 +19,7 @@ public class DetectFaces {
 			
 			for(int j = 0; j < picture.length; j++){
 				System.out.println("\"picture[j]\" = " + picture[j]);
-				DefectFacesThread defectFaces = new DefectFacesThread(String.valueOf(picture[j]));
+				DetectFacesThread defectFaces = new DetectFacesThread(String.valueOf(picture[j]));
 				Thread thread = new Thread(defectFaces);
 				thread.start();
 				try {

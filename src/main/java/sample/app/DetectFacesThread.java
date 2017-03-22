@@ -23,11 +23,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class DefectFacesThread implements Runnable{
+public class DetectFacesThread implements Runnable{
 	private static String api_key = "{api_key}"; 
 	private String picture;
 	
-	public DefectFacesThread(String picture){
+	public DetectFacesThread(String picture){
 		this.picture = picture;
 	}
 	public void run(){
