@@ -3,13 +3,13 @@ package sample.app;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-public class TrainThread implements Runnable {
+public class AddTraindataThread implements Runnable {
 	
 	private String info;
 	private String path;
 	App app = new App();
-	
-	public TrainThread(String info,String path){
+	AddTraindata traindata = new AddTraindata(); 
+	public AddTraindataThread(String info,String path){
 		this.info = info;
 		this.path = path;
 	}
@@ -35,7 +35,7 @@ public class TrainThread implements Runnable {
 			train_img_name = fileForm(post_img_url);
 			System.out.println("\"train_img_url\" = " + train_img_url);
 //			System.out.println("\"train_img_name\" = " + train_img_name);
-			train_img_path = "./trainImage/" + img_path + "/" + train_img_name;
+			train_img_path = traindata.picture_path + "/" + img_path + "/" + train_img_name;
 //			System.out.println("\"train_img_path\" = " + train_img_path);
 			app.addImage(train_img_url,train_img_path);
 		} catch (UnsupportedEncodingException e) {

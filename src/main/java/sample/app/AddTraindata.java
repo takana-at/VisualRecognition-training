@@ -17,20 +17,23 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class trainningdata {
+public class AddTraindata {
 	public static App app = new App();
+	public static String picture_path;
 
 	public static void main(String[] args) {
 
-		if (args == null || args.length != 2){
+		if (args == null || args.length != 4){
 			throw new IllegalArgumentException("no args...");
 		}
 		
 		/* トレーニングデータとして抽出するURLを定義する */
 		String site_url = args[0];
 		app.host_url = args[1];
+		String meta_path = args[2];
+		picture_path = args[3];
 
-		File folder = new File("./trainMetafile");
+		File folder = new File(meta_path);
 		File files[] = folder.listFiles();
 		for(int i = 0; i < files.length; i++){
 //			System.out.println("\"files[i]\" = " + files[i]);
@@ -116,7 +119,7 @@ public class trainningdata {
 //		System.out.println();
 			
 			/*	マルチスレッド実装	*/
-			TrainThread train = new TrainThread(train_img_info[0],img_path);
+			AddTraindataThread train = new AddTraindataThread(train_img_info[0],img_path);
 			Thread thread = new Thread(train);
 			thread.start();
 			try {
