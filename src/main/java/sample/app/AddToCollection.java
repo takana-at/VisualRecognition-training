@@ -6,7 +6,12 @@ public class AddToCollection {
 	public static App app = new App();
 
 	public static void main(String[] args) {
-		File imgFolder = new File("./trainImage");
+		if(args == null || args.length !=1){
+			throw new IllegalArgumentException("no args...");
+		}
+		String trainImage = args[0];
+		
+		File imgFolder = new File(trainImage);
 		File imgId[] = imgFolder.listFiles();
 		for(int i = 0; i < imgId.length; i++){
 			System.out.println("\"imgId[i]\" = " + imgId[i]);
