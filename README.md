@@ -3,14 +3,10 @@
 
 # ファイル構成
 tApp
-
-|
-
-|-src/test/java
-
-|-src/main/java
-
-|-AddToCollection.java
+  |
+  |-src/test/java
+  |-src/main/java
+  |-AddToCollection.java
 
 |-AddToCollectionThread.java
 
