@@ -45,7 +45,8 @@
   ⑤AddToCollectio.javaファイルの引数に、{./trainImage}と入力し、AddToCollectio.javaを実行させます。
 
 5.学習データを登録したことを確認します。
-　①Watson API Explorerから、下記をクリックし、{api_key}を入力し、{Try it out!}をクリックします。
+　
+ ①Watson API Explborerから、下記をクリックし、{api_key}を入力し、{Try it out!}をクリックします。
 	get /v3/collections	(List all custom collections - beta)
 
 　②先ほど作成したcollection_idの"images"の数が、trainImageに格納されている画像の数と一致すれば学習データを登録できました。
