@@ -10,9 +10,8 @@ tApp
   
  |-src/main/java
   
-|-AddToCollection.java
-
-|-AddToCollectionThread.java
+		|-AddToCollection.java
+		|-AddToCollectionThread.java
 
 |-AddTraindata.java
 
