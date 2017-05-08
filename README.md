@@ -3,18 +3,18 @@
 
 ## ファイル構成
 	tApp
-	 |
 	 |-src/test/java
 	 |-src/main/java
-		|-AddToCollection.java
-		|-AddToCollectionThread.java
-		|-AddTraindata.java
-		|-AddTraindataThread.java
-		|-App.java
-		|-Crawl.java
+		|-AddToCollection.java			collectionに学習データを追加します。
+		|-AddToCollectionThread.java	
+		|-AddTraindata.java			
+		|-AddTraindataThread.java		
+		|-App.java				
+		|-Crawl.java				
 		|-Detectfaces.java
 		|-DetectfacesThread.java
+	|-.gitignore
 	|-pom.xml
-	|-READ.ME
+	|-README.md
 
 
