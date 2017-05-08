@@ -10,9 +10,11 @@
   ①下記のURLから、Watson API Explorerを開きます。
 	  https://watson-api-explorer.mybluemix.net/apis/visual-recognition-v3#/
 	  
+  
   ②URLを開いたら、下記をクリックします。
   	post /v3/collections　(Create a new collection - beta)
 　　
+  
   ③{api_key} に、先ほどメモした{api_key} を入力し、{name}に任意の名前を入力し、{Try it out!}をクリックします。
   
   ④responseで返ってきた{collection_id}をメモしておきます。
@@ -46,8 +48,9 @@
 
 5.学習データを登録したことを確認します。
 　
- ①Watson API Explborerから、下記をクリックし、{api_key}を入力し、{Try it out!}をクリックします。
+ ①Watson API Explorerから、下記をクリックし、{api_key}を入力し、{Try it out!}をクリックします。
 	get /v3/collections	(List all custom collections - beta)
+
 
 ②先ほど作成したcollection_idの"images"の数が、trainImageに格納されている画像の数と一致すれば学習データを登録できました。
 
