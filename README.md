@@ -43,10 +43,12 @@
 		  -tora.json
   
   ④AddToCollectionThread.javaファイルを開き、{api_key} と {collection_id}を、先ほどメモした{api_key} と {collection_id}に変更します。
+  
 　 
   ⑤AddToCollectio.javaファイルの引数に、{./trainImage}と入力し、AddToCollectio.javaを実行させます。
 
 5.学習データを登録したことを確認します。
+
 　
  ①Watson API Explorerから、下記をクリックし、{api_key}を入力し、{Try it out!}をクリックします。
 	get /v3/collections	(List all custom collections - beta)
