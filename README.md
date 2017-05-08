@@ -32,10 +32,10 @@
 		　　-tora1.png
 		　　-tora2.png
 
-  ③traiinMetafileフォルダに画像のIDをふったフォルダを作成し、そのフォルダにtrainImageで格納した画像ファイルに関するメタ情報をjsonファイルとして登録します。 	
+ ③traiinMetafileフォルダに画像のIDをふったフォルダを作成し、そのフォルダにtrainImageで格納した画像ファイルに関するメタ情報をjsonファイルとして登録します。 	
   たとえば、下記のように{tora}とIDをふったフォルダに、tora.jsonファイルで定義します。
  
-  　	 tApp
+ 	 tApp
 	  |-trainMetafile
 	 	-tora
 		  -tora.json
@@ -49,7 +49,7 @@
  ①Watson API Explborerから、下記をクリックし、{api_key}を入力し、{Try it out!}をクリックします。
 	get /v3/collections	(List all custom collections - beta)
 
-　②先ほど作成したcollection_idの"images"の数が、trainImageに格納されている画像の数と一致すれば学習データを登録できました。
+②先ほど作成したcollection_idの"images"の数が、trainImageに格納されている画像の数と一致すれば学習データを登録できました。
 
 6.登録した学習データを使って類似画像検索を行う際は、下記のsatokotaproject/vrAppをご覧ください。
 	https://github.com/satokotaproject/vrApp/
