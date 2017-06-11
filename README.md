@@ -18,7 +18,7 @@
    	たとえば、下記のように{tora}とIDをふったフォルダに、トラの画像を格納します。
 
            tApp
-	       |-trainImage
+	   	|-trainImage
 	 	    	|-tora  
 		　　    		|-tora1.png  
 		　　    		|-tora2.png  
@@ -27,7 +27,7 @@
    	たとえば、下記のように{tora}とIDをふったフォルダに、tora.jsonファイルで定義します。 
  
         tApp
-          |-trainMetafile
+        |-trainMetafile
 	     		|-tora
 		    		|-tora.json
   
