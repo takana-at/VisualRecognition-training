@@ -16,12 +16,11 @@
   ①tAppの直下にtrainImageフォルダと、trainMetafileフォルダを作成します。  
   ②trainImageフォルダに画像のIDをふったフォルダを作成し、そのフォルダに画像を登録します。  
   たとえば、下記のように{tora}とIDをふったフォルダに、トラの画像を格納します。
-
-  	 tApp
+ 	 tApp
 	  |-trainImage
 	 	-tora
-		　　-tora1.png
-		　　-tora2.png
+		　　 -tora1.png
+		　　 -tora2.png
 
  ③traiinMetafileフォルダに画像のIDをふったフォルダを作成し、そのフォルダにtrainImageで格納した画像ファイルに関するメタ情報をjsonファイルとして登録します。  
   たとえば、下記のように{tora}とIDをふったフォルダに、tora.jsonファイルで定義します。 
