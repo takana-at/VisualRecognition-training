@@ -19,9 +19,9 @@
 
 		tApp
 	   	|-trainImage
-	 	    	|-tora  
-		　　    		|-tora1.png  
-		　　    		|-tora2.png  
+	 	    		|-tora  
+		　　    		  |-tora1.png  
+		　　    		  |-tora2.png  
 
 	③traiinMetafileフォルダに画像のIDをふったフォルダを作成し、そのフォルダにtrainImageで格納した画像ファイルに関するメタ情報をjsonファイルとして登録します。  
       たとえば、下記のように{tora}とIDをふったフォルダに、tora.jsonファイルで定義します。 
@@ -29,7 +29,7 @@
  		tApp
  	       |-trainMetafile
 			|-tora
-		    		|-tora.json
+		    	   |-tora.json
   
   	④AddToCollectionThread.javaファイルを開き、{api_key} と {collection_id}を、先ほどメモした{api_key} と {collection_id}に変更します。   
   	⑤AddToCollectio.javaファイルの引数に、{./trainImage}と入力し、AddToCollectio.javaを実行させます。  
