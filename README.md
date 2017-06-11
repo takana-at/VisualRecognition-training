@@ -38,7 +38,7 @@
    		get /v3/collections	(List all custom collections - beta)  
   	②先ほど作成したcollection_idの"images"の数が、trainImageに格納されている画像の数と一致すれば学習データを登録できました。  
 6. 登録した学習データを使って類似画像検索を行う際は、下記のsatokotaproject/vrAppをご覧ください。  
-		https://github.com/satokotaproject/vrApp/
+		https://github.com/takana-at/VisualRecognition-findSimilar
 
 
 ## ファイル構成
