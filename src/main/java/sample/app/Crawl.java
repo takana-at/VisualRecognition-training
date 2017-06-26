@@ -6,8 +6,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class DemoApp {
-	public static App app = new App();
+public class Crawl {
+	public static TrainingDefinition app = new TrainingDefinition();
 
 	public static void main(String[] args) {
 
@@ -64,16 +64,23 @@ public class DemoApp {
 	 * person_image_nameで、【有名人の画像のファイル名】の抽出(2017/02/13変数として追加)
 	 */
 	public static String extractPersons(String str) {
+		
+		try{
 		String person_name = app.TrimText(str, new String[] { "</a>", ">" }, "</a>");
 		String person_image_url = app.TrimText(str, new String[] { "<img", "src=\"" }, "\"");
 		String person_detail_page = app.host_url + app.TrimText(str, new String[] { "<a", "href=\"" }, "\"");
 		String person_image_name = person_image_url.substring(person_image_url.lastIndexOf("/")+1,person_image_url.length()-4);
-
+		
 		shapeImg(person_image_name, person_image_url);
 		produceText(person_name,person_image_name, person_image_url, person_detail_page);		
 
 		System.out.println(person_name + person_image_url + person_detail_page + person_image_name);
 		return person_name + person_image_url + person_detail_page + person_image_name;
+
+		}catch(Exception e){
+			return null;
+		}
+		
 	}
 
 	/*
