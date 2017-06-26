@@ -17,7 +17,7 @@ import org.apache.http.util.EntityUtils;
 
 public class AddToCollectionThread implements Runnable{
 	private static String api_key = "{api_key}";
-	private static String collection_id = "{collection_id}";
+	private static String collection_id = "{collection_id}";	
 	private String img_path;
 	private String meta_path;
 	
