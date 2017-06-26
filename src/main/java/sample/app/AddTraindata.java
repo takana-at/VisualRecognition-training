@@ -18,7 +18,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class AddTraindata {
-	public static App app = new App();
+	public static TrainingDefinition app = new TrainingDefinition();
 	public static String picture_path;
 
 	public static void main(String[] args) {
@@ -133,100 +133,5 @@ public class AddTraindata {
 		}
 		return null;
 	}
-	
-//	/*
-//	 * HTMLタグの抽出 抽出したHTMLの文字列から、有名人1人1人の情報は、【<a>】タグの内容を文字列で抽出
-//	 */
-//		public static String retrievePersons(String html,String show_img_name,String show_img_url){
-////			String person_group_info = app.TrimText(html, new String[] {"</head>","</div>" ,"firstHeading","mw-content-text",">"}, "<p><b>");
-//			String person_group_info = app.TrimText(html, new String[] {"</head>","</div>" ,"firstHeading","mw-content-text","<table"}, "<p><b>");			
-////			 System.out.println(person_group_info);
-////				extractPersons(person_group_info,show_img_name,show_img_url);
-//				System.out.println("");
-//			return html;
-//		}
-//
-//	/*
-//	 * 1人の有名人に関する情報をさらに細かく抽出 抽出する情報は、【有名人名】、【有名人の表示用画像URL】
-//	 * person_nameで、【有名人名】を定義する person_image_urlで、【有名人の表示用画像URL】を定義する
-//	 * 2017/2/22追加	person_img_folder_nameで、、【有名人の表示用画像】を格納するフォルダー名を定義
-//	 * must!! 2017/2/22時点で、スクレイピングのコーディングに不備あり	
-//	 */
-//	public static String extractPersons(String str,String show_img_name,String show_img_url) {
-//		String person_name = app.TrimText(str, new String[] { "</span><br />" }, "</th>");
-//		String person_image_url = null;
-//		String person_image_name = null;
-//			/*	2017/2/22追加	類似画像検索後の表示用画像URLの抽出	
-//			 * 表示用URLに画像が掲載されている場合は掲載されている画像を、掲載されていない場合はトレーニングデータの画像を表示する	*/
-//		String unshaped_url = app.TrimText(str, new String[] { person_name,"text-align:center","colspan=","text-align:center","itemprop="},"scope");
-////		System.out.println(unshaped_url);
-//		
-//		if(unshaped_url.indexOf("img") != -1){		
-//			person_image_url = "https:" + app.TrimText(unshaped_url, new String[] { "img","srcset=\""}, " ");
-////			person_image_url = "https:" + app.TrimText(str, new String[] { person_name,"colspan=","itemprop=" ,"img","srcset=\""}, " ");
-//			person_image_name = person_image_url.substring(person_image_url.lastIndexOf("/")+1,person_image_url.length()-4);
-//		}else{
-//			person_image_url = show_img_url;
-//			person_image_name = show_img_name;
-//		}
-//		String img_folder_name = show_img_name;
-///*		
-//		shapeImg(person_image_name, person_image_url,img_folder_name);
-// 		produceText(person_name,person_image_name, person_image_url);		
-//*/
-//		 
-//		System.out.println(person_name + " " +  person_image_url  + " " + person_image_name	/* + img_folder_name	*/);
-//		return person_name + person_image_url  + person_image_name;
-//		
-//	}
-//	/*
-//	 * 抽出した【有名人の画像URL】を画像ファイルとして保存
-//	 * 2017/02/13作成する画像ファイルのファイル名変更
-//	 */
-//	public static String shapeImg(String img_name, String img_url,String img_folder_name) {
-//		File file = new File("./showImage");
-//		if(file.exists() == false){
-//			file.mkdirs();
-//		}
-//		File person_file = new File(file + "/" + img_folder_name);
-//		if(person_file.exists() == false){
-//			person_file.mkdirs();
-//		}
-//		try {
-//			FileOutputStream output = new FileOutputStream(person_file + "/" + img_name + ".jpg");
-//			byte[] image = app.getImage(img_url);
-//			output.write(image);
-//			output.flush();
-//			output.close();
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}		
-//		return null;
-//	}
-//	/*
-//	 * 抽出した【有名人名】、【有名人の画像のファイル名】、【有名人の画像URL】、【ページのリンクURL】を定義したmetadataファイルをjsonファイルとして作成する
-//	 * 2017/02/13作成するmetadataファイルのファイル名変更/jsonファイルに定義する情報として、【有名人の画像のファイル名】を追加
-//	 */
-//	public static String produceText(String name,String img_name, String img_url) {
-//		File file = new File("./metafile");
-//		if(file.exists() == false){
-//			file.mkdirs();
-//		}
-//		File person_file = new File(file + "/" + img_name);
-//		if(person_file.exists() == false){
-//			person_file.mkdirs();
-//		}
-//		
-//		try {
-//			FileWriter fw = new FileWriter(person_file + "/" + img_name + ".json");
-//			fw.write("{\"name\":\""+ name + "\",\"img_name\":\"" +  img_name + "\",\"img_url\":\"" + img_url + "\"}");
-//			fw.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
-	
+		
 }
