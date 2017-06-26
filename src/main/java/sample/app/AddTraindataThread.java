@@ -7,7 +7,7 @@ public class AddTraindataThread implements Runnable {
 	
 	private String info;
 	private String path;
-	App app = new App();
+	TrainingDefinition app = new TrainingDefinition();
 	AddTraindata traindata = new AddTraindata(); 
 	public AddTraindataThread(String info,String path){
 		this.info = info;
